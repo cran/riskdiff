@@ -1,0 +1,882 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+
+
+<title>Getting Started with Risk Differences</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { display: inline-block; text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">Getting Started with Risk Differences</h1>
+
+
+
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="fu">library</span>(riskdiff)</span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="fu">library</span>(dplyr)</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="co">#&gt; Attaching package: &#39;dplyr&#39;</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="co">#&gt; The following objects are masked from &#39;package:stats&#39;:</span></span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb1-7"><a href="#cb1-7" tabindex="-1"></a><span class="co">#&gt;     filter, lag</span></span>
+<span id="cb1-8"><a href="#cb1-8" tabindex="-1"></a><span class="co">#&gt; The following objects are masked from &#39;package:base&#39;:</span></span>
+<span id="cb1-9"><a href="#cb1-9" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb1-10"><a href="#cb1-10" tabindex="-1"></a><span class="co">#&gt;     intersect, setdiff, setequal, union</span></span>
+<span id="cb1-11"><a href="#cb1-11" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span></code></pre></div>
+<div id="why-risk-differences-matter-in-public-health" class="section level2">
+<h2>Why Risk Differences Matter in Public Health</h2>
+<p>When communicating health risks to policymakers, patients, or the
+public, <strong>absolute measures</strong> like risk differences are
+often more meaningful than <strong>relative measures</strong> like odds
+ratios or risk ratios.</p>
+<p>Consider these two statements about betel nut (areca nut) chewing and
+cancer risk:</p>
+<ol style="list-style-type: decimal">
+<li><p>“Betel nut chewing increases the odds of cancer by 5.2
+times”</p></li>
+<li><p>“Betel nut chewing increases cancer risk by 12 percentage
+points”</p></li>
+</ol>
+<p>The second statement is immediately actionable: in a screening group
+of 1,000 people, you would expect to find approximately 120 additional
+cancer cases among betel nut chewers compared to non-chewers. This
+directly informs:</p>
+<ul>
+<li><p>Resource allocation for screening programs</p></li>
+<li><p>Expected yield from targeted interventions</p></li>
+<li><p>Number needed to screen calculations</p></li>
+<li><p>Public health messaging priorities</p></li>
+</ul>
+<blockquote>
+<p><strong>Key Concept</strong>: Risk differences represent the
+<strong>additional burden of disease</strong> attributable to an
+exposure. They are on the same scale as the outcome, making them
+intuitive for non-statistical audiences.</p>
+</blockquote>
+</div>
+<div id="understanding-the-example-data" class="section level2">
+<h2>Understanding the Example Data</h2>
+<p>The <code>riskdiff</code> package includes example data from a cancer
+screening program in Northeast India:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="fu">data</span>(cachar_sample)</span>
+<span id="cb2-2"><a href="#cb2-2" tabindex="-1"></a></span>
+<span id="cb2-3"><a href="#cb2-3" tabindex="-1"></a><span class="co"># Basic structure</span></span>
+<span id="cb2-4"><a href="#cb2-4" tabindex="-1"></a><span class="fu">glimpse</span>(cachar_sample)</span>
+<span id="cb2-5"><a href="#cb2-5" tabindex="-1"></a><span class="co">#&gt; Rows: 2,500</span></span>
+<span id="cb2-6"><a href="#cb2-6" tabindex="-1"></a><span class="co">#&gt; Columns: 12</span></span>
+<span id="cb2-7"><a href="#cb2-7" tabindex="-1"></a><span class="co">#&gt; $ id                 &lt;int&gt; 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, …</span></span>
+<span id="cb2-8"><a href="#cb2-8" tabindex="-1"></a><span class="co">#&gt; $ age                &lt;int&gt; 53, 25, 18, 28, 51, 25, 56, 20, 58, 18, 30, 64, 54,…</span></span>
+<span id="cb2-9"><a href="#cb2-9" tabindex="-1"></a><span class="co">#&gt; $ sex                &lt;fct&gt; female, male, female, female, male, female, male, m…</span></span>
+<span id="cb2-10"><a href="#cb2-10" tabindex="-1"></a><span class="co">#&gt; $ residence          &lt;fct&gt; urban slum, rural, rural, rural, rural, rural, rura…</span></span>
+<span id="cb2-11"><a href="#cb2-11" tabindex="-1"></a><span class="co">#&gt; $ smoking            &lt;fct&gt; No, No, No, No, No, No, Yes, No, No, No, No, Yes, N…</span></span>
+<span id="cb2-12"><a href="#cb2-12" tabindex="-1"></a><span class="co">#&gt; $ tobacco_chewing    &lt;fct&gt; Yes, No, No, Yes, Yes, No, Yes, No, Yes, Yes, Yes, …</span></span>
+<span id="cb2-13"><a href="#cb2-13" tabindex="-1"></a><span class="co">#&gt; $ areca_nut          &lt;fct&gt; Yes, Yes, Yes, Yes, No, No, Yes, No, Yes, Yes, No, …</span></span>
+<span id="cb2-14"><a href="#cb2-14" tabindex="-1"></a><span class="co">#&gt; $ alcohol            &lt;fct&gt; No, No, No, No, No, No, No, Yes, No, Yes, No, No, N…</span></span>
+<span id="cb2-15"><a href="#cb2-15" tabindex="-1"></a><span class="co">#&gt; $ abnormal_screen    &lt;int&gt; 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, …</span></span>
+<span id="cb2-16"><a href="#cb2-16" tabindex="-1"></a><span class="co">#&gt; $ head_neck_abnormal &lt;int&gt; 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, …</span></span>
+<span id="cb2-17"><a href="#cb2-17" tabindex="-1"></a><span class="co">#&gt; $ age_group          &lt;fct&gt; 40-60, Under 40, Under 40, Under 40, 40-60, Under 4…</span></span>
+<span id="cb2-18"><a href="#cb2-18" tabindex="-1"></a><span class="co">#&gt; $ tobacco_areca_both &lt;fct&gt; Yes, No, No, Yes, No, No, Yes, No, Yes, Yes, No, Ye…</span></span>
+<span id="cb2-19"><a href="#cb2-19" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="#cb2-20" tabindex="-1"></a><span class="co"># Key variables for our analysis</span></span>
+<span id="cb2-21"><a href="#cb2-21" tabindex="-1"></a>cachar_sample <span class="sc">%&gt;%</span></span>
+<span id="cb2-22"><a href="#cb2-22" tabindex="-1"></a>  <span class="fu">select</span>(abnormal_screen, areca_nut, smoking, alcohol, age, sex, residence) <span class="sc">%&gt;%</span></span>
+<span id="cb2-23"><a href="#cb2-23" tabindex="-1"></a>  <span class="fu">summary</span>()</span>
+<span id="cb2-24"><a href="#cb2-24" tabindex="-1"></a><span class="co">#&gt;  abnormal_screen  areca_nut  smoking    alcohol         age       </span></span>
+<span id="cb2-25"><a href="#cb2-25" tabindex="-1"></a><span class="co">#&gt;  Min.   :0.0000   No : 778   No :2168   No :1962   Min.   :18.00  </span></span>
+<span id="cb2-26"><a href="#cb2-26" tabindex="-1"></a><span class="co">#&gt;  1st Qu.:0.0000   Yes:1722   Yes: 332   Yes: 538   1st Qu.:23.00  </span></span>
+<span id="cb2-27"><a href="#cb2-27" tabindex="-1"></a><span class="co">#&gt;  Median :0.0000                                    Median :32.00  </span></span>
+<span id="cb2-28"><a href="#cb2-28" tabindex="-1"></a><span class="co">#&gt;  Mean   :0.1604                                    Mean   :36.06  </span></span>
+<span id="cb2-29"><a href="#cb2-29" tabindex="-1"></a><span class="co">#&gt;  3rd Qu.:0.0000                                    3rd Qu.:49.00  </span></span>
+<span id="cb2-30"><a href="#cb2-30" tabindex="-1"></a><span class="co">#&gt;  Max.   :1.0000                                    Max.   :84.00  </span></span>
+<span id="cb2-31"><a href="#cb2-31" tabindex="-1"></a><span class="co">#&gt;      sex            residence   </span></span>
+<span id="cb2-32"><a href="#cb2-32" tabindex="-1"></a><span class="co">#&gt;  male  :1880   rural     :2158  </span></span>
+<span id="cb2-33"><a href="#cb2-33" tabindex="-1"></a><span class="co">#&gt;  female: 620   urban     : 251  </span></span>
+<span id="cb2-34"><a href="#cb2-34" tabindex="-1"></a><span class="co">#&gt;                urban slum:  91  </span></span>
+<span id="cb2-35"><a href="#cb2-35" tabindex="-1"></a><span class="co">#&gt;                                 </span></span>
+<span id="cb2-36"><a href="#cb2-36" tabindex="-1"></a><span class="co">#&gt;                                 </span></span>
+<span id="cb2-37"><a href="#cb2-37" tabindex="-1"></a><span class="co">#&gt; </span></span></code></pre></div>
+<p>This dataset represents a cross-sectional screening study where:</p>
+<ul>
+<li><p><code>abnormal_screen</code> = 1 indicates an abnormal cancer
+screening result</p></li>
+<li><p><code>areca_nut</code> indicates areca (or betel) nut chewing
+status</p></li>
+<li><p>Other variables capture demographics and risk factors</p></li>
+</ul>
+</div>
+<div id="your-first-risk-difference-analysis" class="section level2">
+<h2>Your First Risk Difference Analysis</h2>
+<p>Let’s calculate the risk difference for cancer associated with betel
+nut chewing:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="co"># Simple unadjusted analysis</span></span>
+<span id="cb3-2"><a href="#cb3-2" tabindex="-1"></a>rd_simple <span class="ot">&lt;-</span> <span class="fu">calc_risk_diff</span>(</span>
+<span id="cb3-3"><a href="#cb3-3" tabindex="-1"></a>  <span class="at">data =</span> cachar_sample,</span>
+<span id="cb3-4"><a href="#cb3-4" tabindex="-1"></a>  <span class="at">outcome =</span> <span class="st">&quot;abnormal_screen&quot;</span>,</span>
+<span id="cb3-5"><a href="#cb3-5" tabindex="-1"></a>  <span class="at">exposure =</span> <span class="st">&quot;areca_nut&quot;</span></span>
+<span id="cb3-6"><a href="#cb3-6" tabindex="-1"></a>)</span>
+<span id="cb3-7"><a href="#cb3-7" tabindex="-1"></a><span class="co">#&gt; Waiting for profiling to be done...</span></span>
+<span id="cb3-8"><a href="#cb3-8" tabindex="-1"></a></span>
+<span id="cb3-9"><a href="#cb3-9" tabindex="-1"></a><span class="fu">print</span>(rd_simple)</span>
+<span id="cb3-10"><a href="#cb3-10" tabindex="-1"></a><span class="co">#&gt; Risk Difference Analysis Results (v0.2.0+)</span></span>
+<span id="cb3-11"><a href="#cb3-11" tabindex="-1"></a><span class="co">#&gt; ========================================== </span></span>
+<span id="cb3-12"><a href="#cb3-12" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-13"><a href="#cb3-13" tabindex="-1"></a><span class="co">#&gt; Confidence level: 95% </span></span>
+<span id="cb3-14"><a href="#cb3-14" tabindex="-1"></a><span class="co">#&gt; Number of comparisons: 1 </span></span>
+<span id="cb3-15"><a href="#cb3-15" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb3-16"><a href="#cb3-16" tabindex="-1"></a><span class="co">#&gt;   Exposure Risk Difference           95% CI P-value    Model Boundary CI Method</span></span>
+<span id="cb3-17"><a href="#cb3-17" tabindex="-1"></a><span class="co">#&gt;  areca_nut          18.25% (15.89%, 20.57%)  &lt;0.001 identity               wald</span></span></code></pre></div>
+<div id="understanding-the-output" class="section level3">
+<h3>Understanding the Output</h3>
+<p>The output shows:</p>
+<ul>
+<li><p><strong>rd</strong>: The risk difference (e.g., 0.082 = 8.2
+percentage points)</p></li>
+<li><p><strong>ci_lower, ci_upper</strong>: 95% confidence interval
+bounds</p></li>
+<li><p><strong>p_value</strong>: Test of whether the risk difference
+equals zero</p></li>
+<li><p><strong>model_type</strong>: Which GLM link function successfully
+converged</p></li>
+<li><p><strong>n_obs</strong>: Number of observations used in the
+analysis</p></li>
+</ul>
+</div>
+<div id="interpreting-risk-differences" class="section level3">
+<h3>Interpreting Risk Differences</h3>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" tabindex="-1"></a><span class="co"># Let&#39;s visualize what this risk difference means</span></span>
+<span id="cb4-2"><a href="#cb4-2" tabindex="-1"></a>exposure_summary <span class="ot">&lt;-</span> cachar_sample <span class="sc">%&gt;%</span></span>
+<span id="cb4-3"><a href="#cb4-3" tabindex="-1"></a>  <span class="fu">group_by</span>(areca_nut) <span class="sc">%&gt;%</span></span>
+<span id="cb4-4"><a href="#cb4-4" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb4-5"><a href="#cb4-5" tabindex="-1"></a>    <span class="at">n =</span> <span class="fu">n</span>(),</span>
+<span id="cb4-6"><a href="#cb4-6" tabindex="-1"></a>    <span class="at">cases =</span> <span class="fu">sum</span>(abnormal_screen),</span>
+<span id="cb4-7"><a href="#cb4-7" tabindex="-1"></a>    <span class="at">risk =</span> <span class="fu">mean</span>(abnormal_screen),</span>
+<span id="cb4-8"><a href="#cb4-8" tabindex="-1"></a>    <span class="at">se =</span> <span class="fu">sqrt</span>(risk <span class="sc">*</span> (<span class="dv">1</span> <span class="sc">-</span> risk) <span class="sc">/</span> n)</span>
+<span id="cb4-9"><a href="#cb4-9" tabindex="-1"></a>  ) <span class="sc">%&gt;%</span></span>
+<span id="cb4-10"><a href="#cb4-10" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb4-11"><a href="#cb4-11" tabindex="-1"></a>    <span class="at">risk_percent =</span> risk <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb4-12"><a href="#cb4-12" tabindex="-1"></a>    <span class="at">se_percent =</span> se <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb4-13"><a href="#cb4-13" tabindex="-1"></a>  )</span>
+<span id="cb4-14"><a href="#cb4-14" tabindex="-1"></a></span>
+<span id="cb4-15"><a href="#cb4-15" tabindex="-1"></a><span class="fu">print</span>(exposure_summary)</span>
+<span id="cb4-16"><a href="#cb4-16" tabindex="-1"></a><span class="co">#&gt; # A tibble: 2 × 7</span></span>
+<span id="cb4-17"><a href="#cb4-17" tabindex="-1"></a><span class="co">#&gt;   areca_nut     n cases   risk      se risk_percent se_percent</span></span>
+<span id="cb4-18"><a href="#cb4-18" tabindex="-1"></a><span class="co">#&gt;   &lt;fct&gt;     &lt;int&gt; &lt;int&gt;  &lt;dbl&gt;   &lt;dbl&gt;        &lt;dbl&gt;      &lt;dbl&gt;</span></span>
+<span id="cb4-19"><a href="#cb4-19" tabindex="-1"></a><span class="co">#&gt; 1 No          778    27 0.0347 0.00656         3.47      0.656</span></span>
+<span id="cb4-20"><a href="#cb4-20" tabindex="-1"></a><span class="co">#&gt; 2 Yes        1722   374 0.217  0.00994        21.7       0.994</span></span>
+<span id="cb4-21"><a href="#cb4-21" tabindex="-1"></a></span>
+<span id="cb4-22"><a href="#cb4-22" tabindex="-1"></a><span class="co"># The risk difference is simply:</span></span>
+<span id="cb4-23"><a href="#cb4-23" tabindex="-1"></a>rd_value <span class="ot">&lt;-</span> <span class="fu">diff</span>(exposure_summary<span class="sc">$</span>risk)</span>
+<span id="cb4-24"><a href="#cb4-24" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Risk difference:&quot;</span>, <span class="fu">round</span>(rd_value <span class="sc">*</span> <span class="dv">100</span>, <span class="dv">1</span>), <span class="st">&quot;percentage points</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb4-25"><a href="#cb4-25" tabindex="-1"></a><span class="co">#&gt; Risk difference: 18.2 percentage points</span></span></code></pre></div>
+</div>
+<div id="adjusted-analyses" class="section level3">
+<h3>Adjusted Analyses</h3>
+<p>Real-world associations are often confounded. Let’s adjust for age
+and sex:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="co"># Age and sex adjusted analysis</span></span>
+<span id="cb5-2"><a href="#cb5-2" tabindex="-1"></a>rd_adjusted <span class="ot">&lt;-</span> <span class="fu">calc_risk_diff</span>(</span>
+<span id="cb5-3"><a href="#cb5-3" tabindex="-1"></a>  <span class="at">data =</span> cachar_sample,</span>
+<span id="cb5-4"><a href="#cb5-4" tabindex="-1"></a>  <span class="at">outcome =</span> <span class="st">&quot;abnormal_screen&quot;</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" tabindex="-1"></a>  <span class="at">exposure =</span> <span class="st">&quot;areca_nut&quot;</span>,</span>
+<span id="cb5-6"><a href="#cb5-6" tabindex="-1"></a>  <span class="at">adjust_vars =</span> <span class="fu">c</span>(<span class="st">&quot;age&quot;</span>, <span class="st">&quot;sex&quot;</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" tabindex="-1"></a>)</span>
+<span id="cb5-8"><a href="#cb5-8" tabindex="-1"></a><span class="co">#&gt; Waiting for profiling to be done...</span></span>
+<span id="cb5-9"><a href="#cb5-9" tabindex="-1"></a><span class="fu">print</span>(rd_adjusted)</span>
+<span id="cb5-10"><a href="#cb5-10" tabindex="-1"></a><span class="co">#&gt; Risk Difference Analysis Results (v0.2.0+)</span></span>
+<span id="cb5-11"><a href="#cb5-11" tabindex="-1"></a><span class="co">#&gt; ========================================== </span></span>
+<span id="cb5-12"><a href="#cb5-12" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-13"><a href="#cb5-13" tabindex="-1"></a><span class="co">#&gt; Confidence level: 95% </span></span>
+<span id="cb5-14"><a href="#cb5-14" tabindex="-1"></a><span class="co">#&gt; Number of comparisons: 1 </span></span>
+<span id="cb5-15"><a href="#cb5-15" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-16"><a href="#cb5-16" tabindex="-1"></a><span class="co">#&gt;   Exposure Risk Difference          95% CI P-value Model Boundary CI Method</span></span>
+<span id="cb5-17"><a href="#cb5-17" tabindex="-1"></a><span class="co">#&gt;  areca_nut          17.02% (9.84%, 24.20%)  &lt;0.001   log               wald</span></span>
+<span id="cb5-18"><a href="#cb5-18" tabindex="-1"></a></span>
+<span id="cb5-19"><a href="#cb5-19" tabindex="-1"></a><span class="co"># Show comparison in a readable format</span></span>
+<span id="cb5-20"><a href="#cb5-20" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">=== COMPARISON: UNADJUSTED vs ADJUSTED ===</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb5-21"><a href="#cb5-21" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb5-22"><a href="#cb5-22" tabindex="-1"></a><span class="co">#&gt; === COMPARISON: UNADJUSTED vs ADJUSTED ===</span></span>
+<span id="cb5-23"><a href="#cb5-23" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Unadjusted Risk Difference:&quot;</span>, <span class="fu">sprintf</span>(<span class="st">&quot;%.2f%%&quot;</span>, rd_simple<span class="sc">$</span>rd <span class="sc">*</span> <span class="dv">100</span>), </span>
+<span id="cb5-24"><a href="#cb5-24" tabindex="-1"></a>    <span class="fu">sprintf</span>(<span class="st">&quot;(%.2f%%, %.2f%%)&quot;</span>, rd_simple<span class="sc">$</span>ci_lower <span class="sc">*</span> <span class="dv">100</span>, rd_simple<span class="sc">$</span>ci_upper <span class="sc">*</span> <span class="dv">100</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb5-25"><a href="#cb5-25" tabindex="-1"></a><span class="co">#&gt; Unadjusted Risk Difference: 18.25% (15.89%, 20.57%)</span></span>
+<span id="cb5-26"><a href="#cb5-26" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Adjusted Risk Difference:  &quot;</span>, <span class="fu">sprintf</span>(<span class="st">&quot;%.2f%%&quot;</span>, rd_adjusted<span class="sc">$</span>rd <span class="sc">*</span> <span class="dv">100</span>), </span>
+<span id="cb5-27"><a href="#cb5-27" tabindex="-1"></a>    <span class="fu">sprintf</span>(<span class="st">&quot;(%.2f%%, %.2f%%)&quot;</span>, rd_adjusted<span class="sc">$</span>ci_lower <span class="sc">*</span> <span class="dv">100</span>, rd_adjusted<span class="sc">$</span>ci_upper <span class="sc">*</span> <span class="dv">100</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb5-28"><a href="#cb5-28" tabindex="-1"></a><span class="co">#&gt; Adjusted Risk Difference:   17.02% (9.84%, 24.20%)</span></span>
+<span id="cb5-29"><a href="#cb5-29" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Difference in estimates:   &quot;</span>, <span class="fu">sprintf</span>(<span class="st">&quot;%.2f%%&quot;</span>, (rd_adjusted<span class="sc">$</span>rd <span class="sc">-</span> rd_simple<span class="sc">$</span>rd) <span class="sc">*</span> <span class="dv">100</span>), <span class="st">&quot;percentage points</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb5-30"><a href="#cb5-30" tabindex="-1"></a><span class="co">#&gt; Difference in estimates:    -1.23% percentage points</span></span></code></pre></div>
+<blockquote>
+<p><strong>Note</strong>: Adjustment often changes the risk difference
+estimate. This indicates that age and/or sex were confounders of the
+chewing-cancer association.</p>
+</blockquote>
+</div>
+<div id="stratified-analysis" class="section level3">
+<h3>Stratified Analysis</h3>
+<p>Sometimes we want to know if effects differ across subgroups:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="co"># Stratified by residence (urban vs rural)</span></span>
+<span id="cb6-2"><a href="#cb6-2" tabindex="-1"></a>rd_stratified <span class="ot">&lt;-</span> <span class="fu">calc_risk_diff</span>(</span>
+<span id="cb6-3"><a href="#cb6-3" tabindex="-1"></a>  <span class="at">data =</span> cachar_sample,</span>
+<span id="cb6-4"><a href="#cb6-4" tabindex="-1"></a>  <span class="at">outcome =</span> <span class="st">&quot;abnormal_screen&quot;</span>,</span>
+<span id="cb6-5"><a href="#cb6-5" tabindex="-1"></a>  <span class="at">exposure =</span> <span class="st">&quot;areca_nut&quot;</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" tabindex="-1"></a>  <span class="at">strata =</span> <span class="st">&quot;residence&quot;</span></span>
+<span id="cb6-7"><a href="#cb6-7" tabindex="-1"></a>)</span>
+<span id="cb6-8"><a href="#cb6-8" tabindex="-1"></a><span class="co">#&gt; Waiting for profiling to be done...</span></span>
+<span id="cb6-9"><a href="#cb6-9" tabindex="-1"></a><span class="co">#&gt; Waiting for profiling to be done...</span></span>
+<span id="cb6-10"><a href="#cb6-10" tabindex="-1"></a><span class="co">#&gt; Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</span></span>
+<span id="cb6-11"><a href="#cb6-11" tabindex="-1"></a><span class="co">#&gt; Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</span></span>
+<span id="cb6-12"><a href="#cb6-12" tabindex="-1"></a><span class="co">#&gt; Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</span></span>
+<span id="cb6-13"><a href="#cb6-13" tabindex="-1"></a><span class="co">#&gt; Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</span></span>
+<span id="cb6-14"><a href="#cb6-14" tabindex="-1"></a><span class="co">#&gt; Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</span></span>
+<span id="cb6-15"><a href="#cb6-15" tabindex="-1"></a><span class="co">#&gt; Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</span></span>
+<span id="cb6-16"><a href="#cb6-16" tabindex="-1"></a><span class="co">#&gt; Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</span></span>
+<span id="cb6-17"><a href="#cb6-17" tabindex="-1"></a><span class="co">#&gt; Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</span></span>
+<span id="cb6-18"><a href="#cb6-18" tabindex="-1"></a><span class="co">#&gt; Warning: glm.fit: fitted probabilities numerically 0 or 1 occurred</span></span>
+<span id="cb6-19"><a href="#cb6-19" tabindex="-1"></a><span class="co">#&gt; Waiting for profiling to be done...</span></span>
+<span id="cb6-20"><a href="#cb6-20" tabindex="-1"></a><span class="co">#&gt; Note: 1 of 3 analyses had MLE on parameter space boundary. Robust confidence intervals were used.</span></span>
+<span id="cb6-21"><a href="#cb6-21" tabindex="-1"></a></span>
+<span id="cb6-22"><a href="#cb6-22" tabindex="-1"></a><span class="fu">print</span>(rd_stratified)</span>
+<span id="cb6-23"><a href="#cb6-23" tabindex="-1"></a><span class="co">#&gt; Risk Difference Analysis Results (v0.2.0+)</span></span>
+<span id="cb6-24"><a href="#cb6-24" tabindex="-1"></a><span class="co">#&gt; ========================================== </span></span>
+<span id="cb6-25"><a href="#cb6-25" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-26"><a href="#cb6-26" tabindex="-1"></a><span class="co">#&gt; Confidence level: 95% </span></span>
+<span id="cb6-27"><a href="#cb6-27" tabindex="-1"></a><span class="co">#&gt; Number of comparisons: 3 </span></span>
+<span id="cb6-28"><a href="#cb6-28" tabindex="-1"></a><span class="co">#&gt; Boundary cases detected: 1 of 3 </span></span>
+<span id="cb6-29"><a href="#cb6-29" tabindex="-1"></a><span class="co">#&gt; Boundary CI method: auto </span></span>
+<span id="cb6-30"><a href="#cb6-30" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-31"><a href="#cb6-31" tabindex="-1"></a><span class="co">#&gt;   Exposure Risk Difference                  95% CI P-value    Model    Boundary</span></span>
+<span id="cb6-32"><a href="#cb6-32" tabindex="-1"></a><span class="co">#&gt;  areca_nut          18.89%        (16.28%, 21.46%)  &lt;0.001 identity            </span></span>
+<span id="cb6-33"><a href="#cb6-33" tabindex="-1"></a><span class="co">#&gt;  areca_nut          12.50% (-26421.33%, 26446.33%)   0.987      log [Uh oh]none</span></span>
+<span id="cb6-34"><a href="#cb6-34" tabindex="-1"></a><span class="co">#&gt;  areca_nut          16.96%         (3.07%, 30.85%)   0.017 identity            </span></span>
+<span id="cb6-35"><a href="#cb6-35" tabindex="-1"></a><span class="co">#&gt;          CI Method</span></span>
+<span id="cb6-36"><a href="#cb6-36" tabindex="-1"></a><span class="co">#&gt;               wald</span></span>
+<span id="cb6-37"><a href="#cb6-37" tabindex="-1"></a><span class="co">#&gt;  wald_conservative</span></span>
+<span id="cb6-38"><a href="#cb6-38" tabindex="-1"></a><span class="co">#&gt;               wald</span></span>
+<span id="cb6-39"><a href="#cb6-39" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-40"><a href="#cb6-40" tabindex="-1"></a><span class="co">#&gt; Boundary Case Details:</span></span>
+<span id="cb6-41"><a href="#cb6-41" tabindex="-1"></a><span class="co">#&gt; =====================</span></span>
+<span id="cb6-42"><a href="#cb6-42" tabindex="-1"></a><span class="co">#&gt; Row 2 ( areca_nut ): Boundary type: none </span></span>
+<span id="cb6-43"><a href="#cb6-43" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-44"><a href="#cb6-44" tabindex="-1"></a><span class="co">#&gt; Boundary Type Guide:</span></span>
+<span id="cb6-45"><a href="#cb6-45" tabindex="-1"></a><span class="co">#&gt; - upper_bound: Fitted probabilities near 1</span></span>
+<span id="cb6-46"><a href="#cb6-46" tabindex="-1"></a><span class="co">#&gt; - lower_bound: Fitted probabilities near 0</span></span>
+<span id="cb6-47"><a href="#cb6-47" tabindex="-1"></a><span class="co">#&gt; - separation: Complete/quasi-separation detected</span></span>
+<span id="cb6-48"><a href="#cb6-48" tabindex="-1"></a><span class="co">#&gt; - both_bounds: Probabilities near both 0 and 1</span></span>
+<span id="cb6-49"><a href="#cb6-49" tabindex="-1"></a><span class="co">#&gt; - [Uh oh] indicates robust confidence intervals were used</span></span>
+<span id="cb6-50"><a href="#cb6-50" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb6-51"><a href="#cb6-51" tabindex="-1"></a><span class="co">#&gt; Note: Standard asymptotic theory may not apply for boundary cases.</span></span>
+<span id="cb6-52"><a href="#cb6-52" tabindex="-1"></a><span class="co">#&gt; Confidence intervals use robust methods when boundary detected.</span></span></code></pre></div>
+<p>This shows separate risk differences for urban and rural areas, which
+might reflect:</p>
+<ul>
+<li>Different exposure patterns</li>
+<li>Access to healthcare</li>
+<li>Environmental co-factors</li>
+</ul>
+</div>
+<div id="visualizing-your-results" class="section level3">
+<h3>Visualizing Your Results</h3>
+<p>A picture is worth a thousand p-values:</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="co"># Create a forest plot of risk differences</span></span>
+<span id="cb7-2"><a href="#cb7-2" tabindex="-1"></a>plot_data <span class="ot">&lt;-</span> rd_stratified <span class="sc">%&gt;%</span></span>
+<span id="cb7-3"><a href="#cb7-3" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb7-4"><a href="#cb7-4" tabindex="-1"></a>    <span class="at">label =</span> <span class="fu">paste0</span>(residence, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">(n=&quot;</span>, n_obs, <span class="st">&quot;)&quot;</span>),</span>
+<span id="cb7-5"><a href="#cb7-5" tabindex="-1"></a>    <span class="at">rd_percent =</span> rd <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb7-6"><a href="#cb7-6" tabindex="-1"></a>    <span class="at">ci_lower_percent =</span> ci_lower <span class="sc">*</span> <span class="dv">100</span>,</span>
+<span id="cb7-7"><a href="#cb7-7" tabindex="-1"></a>    <span class="at">ci_upper_percent =</span> ci_upper <span class="sc">*</span> <span class="dv">100</span></span>
+<span id="cb7-8"><a href="#cb7-8" tabindex="-1"></a>  )</span>
+<span id="cb7-9"><a href="#cb7-9" tabindex="-1"></a></span>
+<span id="cb7-10"><a href="#cb7-10" tabindex="-1"></a><span class="fu">ggplot</span>(plot_data, <span class="fu">aes</span>(<span class="at">x =</span> rd_percent, <span class="at">y =</span> label)) <span class="sc">+</span></span>
+<span id="cb7-11"><a href="#cb7-11" tabindex="-1"></a>  <span class="fu">geom_point</span>(<span class="at">size =</span> <span class="dv">3</span>) <span class="sc">+</span></span>
+<span id="cb7-12"><a href="#cb7-12" tabindex="-1"></a>  <span class="fu">geom_errorbarh</span>(<span class="fu">aes</span>(<span class="at">xmin =</span> ci_lower_percent, <span class="at">xmax =</span> ci_upper_percent), </span>
+<span id="cb7-13"><a href="#cb7-13" tabindex="-1"></a>                 <span class="at">height =</span> <span class="fl">0.2</span>) <span class="sc">+</span></span>
+<span id="cb7-14"><a href="#cb7-14" tabindex="-1"></a>  <span class="fu">geom_vline</span>(<span class="at">xintercept =</span> <span class="dv">0</span>, <span class="at">linetype =</span> <span class="st">&quot;dashed&quot;</span>, <span class="at">alpha =</span> <span class="fl">0.5</span>) <span class="sc">+</span></span>
+<span id="cb7-15"><a href="#cb7-15" tabindex="-1"></a>  <span class="fu">labs</span>(</span>
+<span id="cb7-16"><a href="#cb7-16" tabindex="-1"></a>    <span class="at">title =</span> <span class="st">&quot;Risk Difference for Cancer by Betel Nut Chewing&quot;</span>,</span>
+<span id="cb7-17"><a href="#cb7-17" tabindex="-1"></a>    <span class="at">subtitle =</span> <span class="st">&quot;Stratified by Urban/Rural Residence&quot;</span>,</span>
+<span id="cb7-18"><a href="#cb7-18" tabindex="-1"></a>    <span class="at">x =</span> <span class="st">&quot;Risk Difference (percentage points)&quot;</span>,</span>
+<span id="cb7-19"><a href="#cb7-19" tabindex="-1"></a>    <span class="at">y =</span> <span class="st">&quot;&quot;</span></span>
+<span id="cb7-20"><a href="#cb7-20" tabindex="-1"></a>  ) <span class="sc">+</span></span>
+<span id="cb7-21"><a href="#cb7-21" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb7-22"><a href="#cb7-22" tabindex="-1"></a>  <span class="fu">theme</span>(</span>
+<span id="cb7-23"><a href="#cb7-23" tabindex="-1"></a>    <span class="at">plot.title =</span> <span class="fu">element_text</span>(<span class="at">face =</span> <span class="st">&quot;bold&quot;</span>),</span>
+<span id="cb7-24"><a href="#cb7-24" tabindex="-1"></a>    <span class="at">axis.text.y =</span> <span class="fu">element_text</span>(<span class="at">size =</span> <span class="dv">11</span>)</span>
+<span id="cb7-25"><a href="#cb7-25" tabindex="-1"></a>  )</span></code></pre></div>
+<p><img role="img" src="data:image/png;base64,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dufYh1W4/9BDD01JZ4899nDHsu0PT6yhjZEjRwaLLrpoCicrCOuVwIIFC4KrrroqWGSRRVLy9W1tX4SC33//vV7L0JCJr7zyyq7exx13XL0V47333svI1jPW5xZbbBHMnDmz6DJMnDgxsC95wfrrr1/0uYXeUz766KOw/Msss0wwffr0lLxOOukkd9yKvJT9hX4ppg7FXq+6fsV37733LrQ49RKvUNb1kjmJQiABBLCA2jtVpYOsnUcccYTL1l4j5rfffjMPPfSQmTZtmpF1ZpdddnGWxKWXXtpYsefitWnTptLFNMr/sMMOM/PnzzczZswwQ4YMMWPGjDH33nuvkTVn8ODBYZlkOZOFdN111w33vfXWW2575513Nrfddlto7cm2PzyxhjY++OADZxFWlf/973+bFVZYoWirVrG41G6nnXaaO23VVVc1+++/v5k3b56zho4YMcIMHTrUXHHFFebCCy8sNmniZyDQt29fI876rc+dO9e88sorxgpU8/rrr7teCivmMpyVfdfpp59u7r77bmfhyx6rfEdkLT733HONekbKFYqpQ1Kv14a+f5errUgHAvVFAAFaX2RzpKsb02WXXZYSQ0Jzk002cfsk9NSVre4tLwI6duyYEn/cuHHm22+/deJFXfNrrrmmE4UpkdK+SGT8+OOPbm/z5s3zCh1r+Ugpp84/+OCDzYMPPuhE6LHHHuu65JWgtWoaa80xLVu2dJ+//PKL6+bUsVVWWcWVU9346prUAy26P1o3PaC/+OIL8+uvv5rVV1/dqAzR8NNPP7mHeLt27ZxospYaJ3qVtg/K21qMnVuD8raWPn/IfVqLsCvPkksu6VwLVB7Fl/jr0aNHSlx9kXD47rvvHG91jWdzhchX9vSEla93dVAZ1f3etGlT07hxqmu22kxMll9+eVc+iX8f/vjjD2OtSU7cd+nSxYiHunV1PWQK1rLp3CB0bMMNN3SiV93CCmeffba77sTimmuuMSeeeKIRZwUx0H6VReUTJ3XZR0NDcS3kmoiWM7ptrWvOdURt8Ze//MVdMzruuWpbL1b6vfigF0X9qR30G80XJED154O6ttVWKvfw4cP97vAz1/WrY2pDhTlz5rjfU9u2bUMXm2KvwTDTPBs33nij+42vtdZaWWOK4ezZs83iiy8eclRkdefrJVYv0frLV4doBqVer9E0lL9+Z9by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Hnqo6dq160LHi93xyy+/mFtuucXYdZAXWpHm66+/Ng899JBbos6uUb5Q0uUuy0IZRHaIyWeffWbsWvauvJFDxq6V7ebzW2ONNYz+6jPce++9brlGzWOZHjzL6P76KJuu9RdeeMG1SzQvv+3Lceqpp5Z1mU+fPp8QgAAEIBA/AlhAK9gmb775pll77bXNddddZ+bNm+eW95Mw22GHHYzEog/HHXecuf766/3Xkj6jaXgBqvXEFT788EOz1157uTy1rOAjjzxinn/++ZLy0UkSW3feeWfG8yX6+vfvb8aOHZvxeLE7JVaUntaDTg8jR450x7S2d6ZQ7rJkysPv0+TRWkLPl/ett94yX375pfsbPny4Oemkk9zLR13b2eeX7VMC9MUXX8x4uFJlkwC96qqrMpZBOydMmODaTevREyAAAQhAoDYIYAGtYDvLCrneeuulCAKJplVXXdVZ7o466ihXGgmU3XbbrU4li6bRvHlzZ4n0CY4YMcK0atXK5dm4cWPzj3/8wx/is0wEXnrpJXPuueea33//3aV4ySWXuLb3yWt5vSOOOMJoece///3vzirqj1X6s77Ltv/++xv9ESAAAQhAAAKeABZQT6ICn+qmXnHFFVNyWmmllczAgQNNx44d3f4BAwY4a6GWALz00kvN7NmzXXfz+++/76yW//znP93awGPGjHFWNFlPtSzblVdeaebMmZMxDVlb1WUtsavu/zvuuMPIKnr00Uebd99919x4441uuTdfMFljzznnHGeZPeigg8yrr77qD7lP5S3hpPWIr7jiCpdWSoQMX3799VcndPv06WMuuOACM3PmTBfrk08+MRLeWmYuGpT+0KFDo7uK3pZ1Uda/U045xRxwwAHmm2++cWlkK4vP4JlnnjGHH3642XrrrZ3bgrqPfVBbSVzK4rv77rubfffd17zyyiv+sPtU13vLli1Dd4eUg//9IuGv82X1+/nnn93ea6+91lmjo/ElYj3/9PrI5UAhV3mjaRW6nalsOldtpetou+22c9fe+PHjwySnTZvmrgkd0/rVt99+uwmCwB33Fl8fWdepOOolS+L7xx9/9IfCz1x5FdIGkyZNMpdddpnReu79+vVzVv8wcbtxzz33ONeXXXfd1VxzzTWuRyJ6nG0IQAACEKhfAgjQ+uWbkrp8MOW/KHEjgTl9+nR3XA9hPQgVJEglXjp1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lyTWZc6cOW45xXwLH8S1bunXXiHl/O2331KWFM52zq233mpWX311s9FGG2WLwn4IJJYAFtDENh0Fh0D9Evj3v/9trrjiCvPll1+Gf5pU/q9//av5y1/+Yj799FNXAC9AtaRqvvDZZ5+Zyy+/PF+08Pi1115r7rrrLieEX3/9dXPbbbe5pVp79uxp3n333TCeRMBVV10Vft9ll12MlhVdeuml3YNeS7pedtll4eIEYcSEbwwbNsyIqUR5EoNeLjRv47hx45JYfFfm9GsvX0WOO+44oxerQsLWW2/tVoRjuu5CaBEnaQSwgCatxSgvBCpIQJbDhx9+OCVHWW80wb8E37333usskZo/r77CAQccYC6++OIweVk1d9xxR3PggQc6ESyr7P777+/+FGnmzJlm9OjR5vnnnw8nzZdI22OPPQp+8IeZxXxDy9Vec801MS9l9uJpPsavv/46e4QEHIlee4UUd/jw4QVb4PWipT/9BrXoBgEC1UQAC2g1tSZ1gUAFCLRu3dpss8025ttvv3W5aaWQv/3tb2bkyJHuu0TF2WefbbbbbjtnLb399ttNNgvOxx9/7M794IMPCi651mbWkqtjxowxSltBD/WTTjrJWdL+/ve/u3233HKLW41JZfnkk0/M+++/7/JSl6/CPffcY/bZZx/XnS8Rp3oozJ4928VT/L322sutrrVgwQJ3LNs5EuBioDJp+djtt9/eyNL1888/u/P8P6V5yimnuDy1UtQvv/ziDxkJ+3POOcfssMMO5qCDDjKvvvpqeCzTxr/+9S93vpYRVJA1VO4GslxLrMgl4qmnnlro1Gx1yFVvvWioTErz8ccfD1kpcbFV3dXeaoPx48eHeWr1spdeesnceeedZvfdd3fl0upBClo7/cwzz3Tbqrcs1gpiqHTEQUvzXnnllca3mT+uVc70EqLVud5880236pk7+b//stUxGsdvq4zPPfecufrqq81OO+1kzjjjDCMXjmjQkr+HHHKI2Xbbbc2JJ57olpn1x/21p+9qA70s6Xo+4ogjXBkHDBhg1EugoO2xY8e6drn00kvdPv0GDjvsMCNrpzi+9957br//t99++5mzzjorhYE/xicEkkwAAZrk1qPsEGgAAnrgvvjii05cKnuJMwnBn376yZVGlkn5j8oyJHF0+umnu+7v9KKqC18P9GWWWcasu+666Ydzfu/Y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" style="display: block; margin: auto;" /></p>
+</div>
+<div id="common-pitfalls-and-solutions" class="section level3">
+<h3>Common Pitfalls and Solutions</h3>
+<div id="model-convergence-issues" class="section level4">
+<h4>1. Model Convergence Issues</h4>
+<p>The identity link GLM (which directly estimates risk differences)
+often fails to converge. The <code>riskdiff</code> package handles this
+automatically:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb8-1"><a href="#cb8-1" tabindex="-1"></a><span class="co"># Force different link functions</span></span>
+<span id="cb8-2"><a href="#cb8-2" tabindex="-1"></a>rd_identity <span class="ot">&lt;-</span> <span class="fu">calc_risk_diff</span>(</span>
+<span id="cb8-3"><a href="#cb8-3" tabindex="-1"></a>  cachar_sample, <span class="st">&quot;abnormal_screen&quot;</span>, <span class="st">&quot;areca_nut&quot;</span>, </span>
+<span id="cb8-4"><a href="#cb8-4" tabindex="-1"></a>  <span class="at">link =</span> <span class="st">&quot;identity&quot;</span></span>
+<span id="cb8-5"><a href="#cb8-5" tabindex="-1"></a>)</span>
+<span id="cb8-6"><a href="#cb8-6" tabindex="-1"></a><span class="co">#&gt; Waiting for profiling to be done...</span></span>
+<span id="cb8-7"><a href="#cb8-7" tabindex="-1"></a></span>
+<span id="cb8-8"><a href="#cb8-8" tabindex="-1"></a>rd_log <span class="ot">&lt;-</span> <span class="fu">calc_risk_diff</span>(</span>
+<span id="cb8-9"><a href="#cb8-9" tabindex="-1"></a>  cachar_sample, <span class="st">&quot;abnormal_screen&quot;</span>, <span class="st">&quot;areca_nut&quot;</span>, </span>
+<span id="cb8-10"><a href="#cb8-10" tabindex="-1"></a>  <span class="at">link =</span> <span class="st">&quot;log&quot;</span></span>
+<span id="cb8-11"><a href="#cb8-11" tabindex="-1"></a>)</span>
+<span id="cb8-12"><a href="#cb8-12" tabindex="-1"></a><span class="co">#&gt; Waiting for profiling to be done...</span></span>
+<span id="cb8-13"><a href="#cb8-13" tabindex="-1"></a></span>
+<span id="cb8-14"><a href="#cb8-14" tabindex="-1"></a><span class="co"># Compare model types used</span></span>
+<span id="cb8-15"><a href="#cb8-15" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Identity link model type:&quot;</span>, rd_identity<span class="sc">$</span>model_type, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb8-16"><a href="#cb8-16" tabindex="-1"></a><span class="co">#&gt; Identity link model type: identity</span></span>
+<span id="cb8-17"><a href="#cb8-17" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Log link model type:&quot;</span>, rd_log<span class="sc">$</span>model_type, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb8-18"><a href="#cb8-18" tabindex="-1"></a><span class="co">#&gt; Log link model type: log</span></span></code></pre></div>
+</div>
+<div id="very-rare-outcomes" class="section level4">
+<h4>2. Very Rare Outcomes</h4>
+<p>With rare outcomes, risk differences become very small:</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" tabindex="-1"></a><span class="co"># Create a rare outcome (1% prevalence)</span></span>
+<span id="cb9-2"><a href="#cb9-2" tabindex="-1"></a>cachar_sample<span class="sc">$</span>rare_outcome <span class="ot">&lt;-</span> <span class="fu">rbinom</span>(<span class="fu">nrow</span>(cachar_sample), <span class="dv">1</span>, <span class="fl">0.01</span>)</span>
+<span id="cb9-3"><a href="#cb9-3" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" tabindex="-1"></a>rd_rare <span class="ot">&lt;-</span> <span class="fu">calc_risk_diff</span>(</span>
+<span id="cb9-5"><a href="#cb9-5" tabindex="-1"></a>  cachar_sample, </span>
+<span id="cb9-6"><a href="#cb9-6" tabindex="-1"></a>  <span class="st">&quot;rare_outcome&quot;</span>, </span>
+<span id="cb9-7"><a href="#cb9-7" tabindex="-1"></a>  <span class="st">&quot;areca_nut&quot;</span></span>
+<span id="cb9-8"><a href="#cb9-8" tabindex="-1"></a>)</span>
+<span id="cb9-9"><a href="#cb9-9" tabindex="-1"></a><span class="co">#&gt; Waiting for profiling to be done...</span></span>
+<span id="cb9-10"><a href="#cb9-10" tabindex="-1"></a></span>
+<span id="cb9-11"><a href="#cb9-11" tabindex="-1"></a><span class="fu">print</span>(rd_rare)</span>
+<span id="cb9-12"><a href="#cb9-12" tabindex="-1"></a><span class="co">#&gt; Risk Difference Analysis Results (v0.2.0+)</span></span>
+<span id="cb9-13"><a href="#cb9-13" tabindex="-1"></a><span class="co">#&gt; ========================================== </span></span>
+<span id="cb9-14"><a href="#cb9-14" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb9-15"><a href="#cb9-15" tabindex="-1"></a><span class="co">#&gt; Confidence level: 95% </span></span>
+<span id="cb9-16"><a href="#cb9-16" tabindex="-1"></a><span class="co">#&gt; Number of comparisons: 1 </span></span>
+<span id="cb9-17"><a href="#cb9-17" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb9-18"><a href="#cb9-18" tabindex="-1"></a><span class="co">#&gt;   Exposure Risk Difference          95% CI P-value    Model Boundary CI Method</span></span>
+<span id="cb9-19"><a href="#cb9-19" tabindex="-1"></a><span class="co">#&gt;  areca_nut          -0.29% (-1.28%, 0.52%)   0.520 identity               wald</span></span></code></pre></div>
+<blockquote>
+<p><strong>Tip</strong>: For very rare outcomes (&lt;1%), consider
+whether risk ratios might be more appropriate for your research
+question.</p>
+</blockquote>
+</div>
+<div id="missing-data" class="section level4">
+<h4>3. Missing Data</h4>
+<p>The package automatically handles missing data by complete case
+analysis:</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb10-1"><a href="#cb10-1" tabindex="-1"></a><span class="co"># Create a copy with some missing data for demonstration</span></span>
+<span id="cb10-2"><a href="#cb10-2" tabindex="-1"></a><span class="fu">set.seed</span>(<span class="dv">123</span>)  <span class="co"># For reproducibility</span></span>
+<span id="cb10-3"><a href="#cb10-3" tabindex="-1"></a>cachar_with_missing <span class="ot">&lt;-</span> cachar_sample <span class="sc">%&gt;%</span></span>
+<span id="cb10-4"><a href="#cb10-4" tabindex="-1"></a>  <span class="fu">mutate</span>(</span>
+<span id="cb10-5"><a href="#cb10-5" tabindex="-1"></a>    <span class="co"># Introduce more modest missing data (~3% in age, ~2% in alcohol)</span></span>
+<span id="cb10-6"><a href="#cb10-6" tabindex="-1"></a>    <span class="at">age_with_missing =</span> <span class="fu">ifelse</span>(<span class="fu">runif</span>(<span class="fu">n</span>()) <span class="sc">&lt;</span> <span class="fl">0.03</span>, <span class="cn">NA</span>, age),</span>
+<span id="cb10-7"><a href="#cb10-7" tabindex="-1"></a>    <span class="at">alcohol_with_missing =</span> <span class="fu">ifelse</span>(<span class="fu">runif</span>(<span class="fu">n</span>()) <span class="sc">&lt;</span> <span class="fl">0.02</span>, <span class="cn">NA</span>, alcohol)</span>
+<span id="cb10-8"><a href="#cb10-8" tabindex="-1"></a>  )</span>
+<span id="cb10-9"><a href="#cb10-9" tabindex="-1"></a></span>
+<span id="cb10-10"><a href="#cb10-10" tabindex="-1"></a><span class="co"># Check the missing data patterns</span></span>
+<span id="cb10-11"><a href="#cb10-11" tabindex="-1"></a>missing_summary <span class="ot">&lt;-</span> cachar_with_missing <span class="sc">%&gt;%</span></span>
+<span id="cb10-12"><a href="#cb10-12" tabindex="-1"></a>  <span class="fu">summarise</span>(</span>
+<span id="cb10-13"><a href="#cb10-13" tabindex="-1"></a>    <span class="at">total_observations =</span> <span class="fu">n</span>(),</span>
+<span id="cb10-14"><a href="#cb10-14" tabindex="-1"></a>    <span class="at">age_missing =</span> <span class="fu">sum</span>(<span class="fu">is.na</span>(age_with_missing)),</span>
+<span id="cb10-15"><a href="#cb10-15" tabindex="-1"></a>    <span class="at">alcohol_missing =</span> <span class="fu">sum</span>(<span class="fu">is.na</span>(alcohol_with_missing)),</span>
+<span id="cb10-16"><a href="#cb10-16" tabindex="-1"></a>    <span class="at">total_missing_any =</span> <span class="fu">sum</span>(<span class="sc">!</span><span class="fu">complete.cases</span>(<span class="fu">select</span>(., age_with_missing, alcohol_with_missing, abnormal_screen, areca_nut))),</span>
+<span id="cb10-17"><a href="#cb10-17" tabindex="-1"></a>    <span class="at">complete_cases =</span> <span class="fu">sum</span>(<span class="fu">complete.cases</span>(<span class="fu">select</span>(., age_with_missing, alcohol_with_missing, abnormal_screen, areca_nut)))</span>
+<span id="cb10-18"><a href="#cb10-18" tabindex="-1"></a>  )</span>
+<span id="cb10-19"><a href="#cb10-19" tabindex="-1"></a></span>
+<span id="cb10-20"><a href="#cb10-20" tabindex="-1"></a><span class="fu">print</span>(missing_summary)</span>
+<span id="cb10-21"><a href="#cb10-21" tabindex="-1"></a><span class="co">#&gt;   total_observations age_missing alcohol_missing total_missing_any</span></span>
+<span id="cb10-22"><a href="#cb10-22" tabindex="-1"></a><span class="co">#&gt; 1               2500          83              57               140</span></span>
+<span id="cb10-23"><a href="#cb10-23" tabindex="-1"></a><span class="co">#&gt;   complete_cases</span></span>
+<span id="cb10-24"><a href="#cb10-24" tabindex="-1"></a><span class="co">#&gt; 1           2360</span></span>
+<span id="cb10-25"><a href="#cb10-25" tabindex="-1"></a></span>
+<span id="cb10-26"><a href="#cb10-26" tabindex="-1"></a><span class="co"># Analysis with variables that have missing data</span></span>
+<span id="cb10-27"><a href="#cb10-27" tabindex="-1"></a>rd_missing <span class="ot">&lt;-</span> <span class="fu">calc_risk_diff</span>(</span>
+<span id="cb10-28"><a href="#cb10-28" tabindex="-1"></a>  cachar_with_missing,</span>
+<span id="cb10-29"><a href="#cb10-29" tabindex="-1"></a>  <span class="st">&quot;abnormal_screen&quot;</span>,</span>
+<span id="cb10-30"><a href="#cb10-30" tabindex="-1"></a>  <span class="st">&quot;areca_nut&quot;</span>,</span>
+<span id="cb10-31"><a href="#cb10-31" tabindex="-1"></a>  <span class="at">adjust_vars =</span> <span class="fu">c</span>(<span class="st">&quot;age_with_missing&quot;</span>, <span class="st">&quot;alcohol_with_missing&quot;</span>)</span>
+<span id="cb10-32"><a href="#cb10-32" tabindex="-1"></a>)</span>
+<span id="cb10-33"><a href="#cb10-33" tabindex="-1"></a><span class="co">#&gt; Waiting for profiling to be done...</span></span>
+<span id="cb10-34"><a href="#cb10-34" tabindex="-1"></a></span>
+<span id="cb10-35"><a href="#cb10-35" tabindex="-1"></a><span class="co"># Compare with complete case analysis</span></span>
+<span id="cb10-36"><a href="#cb10-36" tabindex="-1"></a>rd_complete <span class="ot">&lt;-</span> <span class="fu">calc_risk_diff</span>(</span>
+<span id="cb10-37"><a href="#cb10-37" tabindex="-1"></a>  cachar_sample,</span>
+<span id="cb10-38"><a href="#cb10-38" tabindex="-1"></a>  <span class="st">&quot;abnormal_screen&quot;</span>, </span>
+<span id="cb10-39"><a href="#cb10-39" tabindex="-1"></a>  <span class="st">&quot;areca_nut&quot;</span>,</span>
+<span id="cb10-40"><a href="#cb10-40" tabindex="-1"></a>  <span class="at">adjust_vars =</span> <span class="fu">c</span>(<span class="st">&quot;age&quot;</span>, <span class="st">&quot;alcohol&quot;</span>)</span>
+<span id="cb10-41"><a href="#cb10-41" tabindex="-1"></a>)</span>
+<span id="cb10-42"><a href="#cb10-42" tabindex="-1"></a><span class="co">#&gt; Waiting for profiling to be done...</span></span>
+<span id="cb10-43"><a href="#cb10-43" tabindex="-1"></a></span>
+<span id="cb10-44"><a href="#cb10-44" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;</span><span class="sc">\n</span><span class="st">=== IMPACT OF MISSING DATA ===</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb10-45"><a href="#cb10-45" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb10-46"><a href="#cb10-46" tabindex="-1"></a><span class="co">#&gt; === IMPACT OF MISSING DATA ===</span></span>
+<span id="cb10-47"><a href="#cb10-47" tabindex="-1"></a><span class="fu">cat</span>(<span class="st">&quot;Complete data analysis (n=&quot;</span>, rd_complete<span class="sc">$</span>n_obs, <span class="st">&quot;): &quot;</span>, <span class="fu">sprintf</span>(<span class="st">&quot;%.2f%%&quot;</span>, rd_complete<span class="sc">$</span>rd <span class="sc">*</span> <span class="dv">100</span>), </span>
+<span id="cb10-48"><a href="#cb10-48" tabindex="-1"></a>    <span class="fu">sprintf</span>(<span class="st">&quot; (%.2f%%, %.2f%%)&quot;</span>, rd_complete<span class="sc">$</span>ci_lower <span class="sc">*</span> <span class="dv">100</span>, rd_complete<span class="sc">$</span>ci_upper <span class="sc">*</span> <span class="dv">100</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb10-49"><a href="#cb10-49" tabindex="-1"></a><span class="co">#&gt; Complete data analysis (n= 2500 ):  17.16%  (9.95%, 24.36%)</span></span>
+<span id="cb10-50"><a href="#cb10-50" tabindex="-1"></a></span>
+<span id="cb10-51"><a href="#cb10-51" tabindex="-1"></a><span class="co"># Check if missing data analysis succeeded</span></span>
+<span id="cb10-52"><a href="#cb10-52" tabindex="-1"></a><span class="cf">if</span> (<span class="sc">!</span><span class="fu">is.na</span>(rd_missing<span class="sc">$</span>rd)) {</span>
+<span id="cb10-53"><a href="#cb10-53" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;Missing data analysis (n=&quot;</span>, rd_missing<span class="sc">$</span>n_obs, <span class="st">&quot;):  &quot;</span>, <span class="fu">sprintf</span>(<span class="st">&quot;%.2f%%&quot;</span>, rd_missing<span class="sc">$</span>rd <span class="sc">*</span> <span class="dv">100</span>), </span>
+<span id="cb10-54"><a href="#cb10-54" tabindex="-1"></a>      <span class="fu">sprintf</span>(<span class="st">&quot; (%.2f%%, %.2f%%)&quot;</span>, rd_missing<span class="sc">$</span>ci_lower <span class="sc">*</span> <span class="dv">100</span>, rd_missing<span class="sc">$</span>ci_upper <span class="sc">*</span> <span class="dv">100</span>), <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb10-55"><a href="#cb10-55" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;Cases lost to missing data: &quot;</span>, rd_complete<span class="sc">$</span>n_obs <span class="sc">-</span> rd_missing<span class="sc">$</span>n_obs, <span class="st">&quot;</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb10-56"><a href="#cb10-56" tabindex="-1"></a>} <span class="cf">else</span> {</span>
+<span id="cb10-57"><a href="#cb10-57" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;Missing data analysis: FAILED (insufficient data or convergence issues)</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb10-58"><a href="#cb10-58" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;Attempted to use n =&quot;</span>, rd_missing<span class="sc">$</span>n_obs, <span class="st">&quot;complete cases</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb10-59"><a href="#cb10-59" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;Cases lost to missing data: &quot;</span>, <span class="fu">nrow</span>(cachar_with_missing) <span class="sc">-</span> rd_missing<span class="sc">$</span>n_obs, <span class="st">&quot;</span><span class="sc">\n\n</span><span class="st">&quot;</span>)</span>
+<span id="cb10-60"><a href="#cb10-60" tabindex="-1"></a>  </span>
+<span id="cb10-61"><a href="#cb10-61" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;📚 LESSON: This demonstrates why missing data can be problematic:</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb10-62"><a href="#cb10-62" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;   • Listwise deletion can dramatically reduce sample size</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb10-63"><a href="#cb10-63" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;   • Small samples may cause model convergence failures</span><span class="sc">\n</span><span class="st">&quot;</span>) </span>
+<span id="cb10-64"><a href="#cb10-64" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;   • Consider multiple imputation for better missing data handling</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb10-65"><a href="#cb10-65" tabindex="-1"></a>  <span class="fu">cat</span>(<span class="st">&quot;   • The riskdiff package gracefully handles these failures</span><span class="sc">\n</span><span class="st">&quot;</span>)</span>
+<span id="cb10-66"><a href="#cb10-66" tabindex="-1"></a>}</span>
+<span id="cb10-67"><a href="#cb10-67" tabindex="-1"></a><span class="co">#&gt; Missing data analysis: FAILED (insufficient data or convergence issues)</span></span>
+<span id="cb10-68"><a href="#cb10-68" tabindex="-1"></a><span class="co">#&gt; Attempted to use n = 2500 complete cases</span></span>
+<span id="cb10-69"><a href="#cb10-69" tabindex="-1"></a><span class="co">#&gt; Cases lost to missing data:  0 </span></span>
+<span id="cb10-70"><a href="#cb10-70" tabindex="-1"></a><span class="co">#&gt; </span></span>
+<span id="cb10-71"><a href="#cb10-71" tabindex="-1"></a><span class="co">#&gt; 📚 LESSON: This demonstrates why missing data can be problematic:</span></span>
+<span id="cb10-72"><a href="#cb10-72" tabindex="-1"></a><span class="co">#&gt;    • Listwise deletion can dramatically reduce sample size</span></span>
+<span id="cb10-73"><a href="#cb10-73" tabindex="-1"></a><span class="co">#&gt;    • Small samples may cause model convergence failures</span></span>
+<span id="cb10-74"><a href="#cb10-74" tabindex="-1"></a><span class="co">#&gt;    • Consider multiple imputation for better missing data handling</span></span>
+<span id="cb10-75"><a href="#cb10-75" tabindex="-1"></a><span class="co">#&gt;    • The riskdiff package gracefully handles these failures</span></span></code></pre></div>
+</div>
+</div>
+<div id="quick-reference" class="section level3">
+<h3>Quick Reference</h3>
+<div id="basic-syntax" class="section level4">
+<h4>Basic Syntax</h4>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" tabindex="-1"></a><span class="co"># Example usage:</span></span>
+<span id="cb11-2"><a href="#cb11-2" tabindex="-1"></a>result <span class="ot">&lt;-</span> <span class="fu">calc_risk_diff</span>(</span>
+<span id="cb11-3"><a href="#cb11-3" tabindex="-1"></a>  <span class="at">data =</span> cachar_sample,           <span class="co"># Your dataset</span></span>
+<span id="cb11-4"><a href="#cb11-4" tabindex="-1"></a>  <span class="at">outcome =</span> <span class="st">&quot;abnormal_screen&quot;</span>,    <span class="co"># Binary outcome variable (0/1)</span></span>
+<span id="cb11-5"><a href="#cb11-5" tabindex="-1"></a>  <span class="at">exposure =</span> <span class="st">&quot;areca_nut&quot;</span>,         <span class="co"># Exposure of interest</span></span>
+<span id="cb11-6"><a href="#cb11-6" tabindex="-1"></a>  <span class="at">adjust_vars =</span> <span class="fu">c</span>(<span class="st">&quot;age&quot;</span>, <span class="st">&quot;sex&quot;</span>),  <span class="co"># Variables to adjust for</span></span>
+<span id="cb11-7"><a href="#cb11-7" tabindex="-1"></a>  <span class="at">strata =</span> <span class="st">&quot;residence&quot;</span>,           <span class="co"># Stratification variables</span></span>
+<span id="cb11-8"><a href="#cb11-8" tabindex="-1"></a>  <span class="at">link =</span> <span class="st">&quot;auto&quot;</span>,                  <span class="co"># Link function: &quot;auto&quot;, &quot;identity&quot;, &quot;log&quot;, &quot;logit&quot;</span></span>
+<span id="cb11-9"><a href="#cb11-9" tabindex="-1"></a>  <span class="at">alpha =</span> <span class="fl">0.05</span>,                   <span class="co"># Significance level (0.05 = 95% CI)</span></span>
+<span id="cb11-10"><a href="#cb11-10" tabindex="-1"></a>  <span class="at">verbose =</span> <span class="cn">FALSE</span>                 <span class="co"># Print diagnostic messages if TRUE</span></span>
+<span id="cb11-11"><a href="#cb11-11" tabindex="-1"></a>)</span></code></pre></div>
+</div>
+<div id="interpretation-guide" class="section level4">
+<h4>Interpretation Guide</h4>
+<table>
+<colgroup>
+<col width="33%" />
+<col width="33%" />
+<col width="33%" />
+</colgroup>
+<thead>
+<tr class="header">
+<th>Risk Difference</th>
+<th>Interpretation</th>
+<th>Public Health Meaning</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>0.05 (5%)</td>
+<td>5 percentage point increase</td>
+<td>50 extra cases per 1,000 screened</td>
+</tr>
+<tr class="even">
+<td>0.01 (1%)</td>
+<td>1 percentage point increase</td>
+<td>10 extra cases per 1,000 screened</td>
+</tr>
+<tr class="odd">
+<td>-0.03 (-3%)</td>
+<td>3 percentage point decrease</td>
+<td>30 fewer cases per 1,000 screened</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div id="when-to-use-risk-differences" class="section level3">
+<h3>When to Use Risk Differences</h3>
+<p>✅ <strong>Use risk differences when:</strong></p>
+<ul>
+<li><p>Communicating to non-statistical audiences</p></li>
+<li><p>Making policy decisions about interventions</p></li>
+<li><p>The outcome is relatively common (&gt;5%)</p></li>
+<li><p>You need to calculate number needed to treat/screen</p></li>
+<li><p>Comparing absolute impact across different populations</p></li>
+</ul>
+<p>❌ <strong>Consider alternatives when:</strong></p>
+<ul>
+<li><p>Outcome is very rare (&lt;1%)</p></li>
+<li><p>You need to compare across populations with very different
+baseline risks</p></li>
+<li><p>Your research question is about biological/etiological
+mechanisms</p></li>
+</ul>
+</div>
+</div>
+<div id="next-steps" class="section level2">
+<h2>Next Steps</h2>
+<p>Now that you understand the basics:</p>
+<ol style="list-style-type: decimal">
+<li><p>See the <strong>“Complete Example”</strong> vignette for a full
+analysis workflow</p></li>
+<li><p>Check the <strong>“Technical Details”</strong> vignette for
+statistical methodology</p></li>
+<li><p>Use <code>?calc_risk_diff</code> for detailed function
+documentation</p></li>
+</ol>
+</div>
+<div id="getting-help" class="section level2">
+<h2>Getting Help</h2>
+<ul>
+<li><p><strong>Issues or bugs</strong>: <a href="https://github.com/jackmurphy2351/riskdiff">https://github.com/jackmurphy2351/riskdiff/issues</a></p></li>
+<li><p><strong>Function help</strong>: <code>?calc_risk_diff</code>,
+<code>?format_risk_diff</code></p></li>
+<li><p><strong>All vignettes</strong>:
+<code>browseVignettes(&quot;riskdiff&quot;)</code></p></li>
+</ul>
+<hr />
+<p><em>This vignette is part of the riskdiff package (v0.2.0), developed
+to make risk difference calculations accessible to public health
+researchers.</em></p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

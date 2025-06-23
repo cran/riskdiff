@@ -78,9 +78,36 @@
   return(data_clean)
 }
 
+.create_failed_result <- function(exposure, group_label, strata) {
+  result <- tibble::tibble(
+    exposure_var = exposure,
+    rd = NA_real_,
+    ci_lower = NA_real_,
+    ci_upper = NA_real_,
+    p_value = NA_real_,
+    model_type = "failed",
+    n_obs = 0L,
+    on_boundary = FALSE,
+    boundary_type = "none",
+    boundary_warning = NULL,
+    ci_method = "none"
+  )
+
+  if (!is.null(strata) && !is.null(group_label)) {
+    for (i in seq_along(strata)) {
+      result[[strata[i]]] <- group_label[[i]]
+    }
+  }
+
+  return(result)
+}
+
+
+
 # Analyze single stratum
 .analyze_stratum <- function(data, outcome, exposure, adjust_vars,
-                             strata, group_label, link, alpha, verbose) {
+                             strata, group_label, link, alpha,
+                             boundary_method, verbose) {
 
   # Check minimum sample size
   if (nrow(data) < 20) {
@@ -116,8 +143,9 @@
     return(.create_failed_result(exposure, group_label, strata))
   }
 
-  # Calculate effects
-  result <- .calculate_main_effect(model_result, data, exposure, alpha)
+  # Calculate effects with boundary detection
+  result <- .calculate_main_effect(model_result, data, exposure, alpha,
+                                   boundary_method, verbose)
 
   # Add sample size
   result$n_obs <- nrow(data)
@@ -171,7 +199,7 @@
     }
 
     if (!is.null(result) && result$converged) {
-      if (verbose) message("(check mark symbol)", link, " link converged")
+      if (verbose) message("[Huzzah!]", link, " link converged")
       return(result)
     }
   }
@@ -288,7 +316,7 @@
 }
 
 # Calculate main exposure effect
-.calculate_main_effect <- function(model_result, data, exposure, alpha) {
+.calculate_main_effect <- function(model_result, data, exposure, alpha, boundary_method, verbose) {
 
   model <- model_result$model
 
@@ -308,7 +336,11 @@
       ci_lower = NA_real_,
       ci_upper = NA_real_,
       p_value = NA_real_,
-      model_type = "coefficient_missing"
+      model_type = "coefficient_missing",
+      on_boundary = FALSE,
+      boundary_type = "none",
+      boundary_warning = NULL,
+      ci_method = "none"
     ))
   }
 
@@ -329,13 +361,46 @@
     p_value <- coefs[exposure_idx, 4]  # P-value from original scale
   }
 
+  # Add boundary detection
+  boundary_info <- tryCatch({
+    .detect_boundary(model)
+  }, error = function(e) {
+    if (verbose) {
+      message("Boundary detection failed: ", e$message)
+    }
+    list(
+      on_boundary = FALSE,
+      boundary_type = "detection_failed",
+      warning_message = paste("Boundary detection error:", e$message)
+    )
+  })
+
+  # Determine CI method used
+  ci_method <- if (boundary_info$on_boundary) {
+    if (boundary_method == "auto") "wald_conservative" else boundary_method
+  } else {
+    "wald"
+  }
+
+  # Print boundary warning if verbose
+  if (verbose && boundary_info$on_boundary) {
+    message("Boundary case detected: ", boundary_info$boundary_type)
+    if (!is.null(boundary_info$warning_message)) {
+      message("Warning: ", boundary_info$warning_message)
+    }
+  }
+
   tibble::tibble(
     exposure_var = exposure,
     rd = rd,
     ci_lower = ci_lower,
     ci_upper = ci_upper,
     p_value = p_value,
-    model_type = model_result$type
+    model_type = model_result$type,
+    on_boundary = boundary_info$on_boundary,
+    boundary_type = boundary_info$boundary_type,
+    boundary_warning = boundary_info$warning_message,
+    ci_method = ci_method
   )
 }
 
@@ -405,7 +470,11 @@
     ci_upper = NA_real_,
     p_value = NA_real_,
     model_type = "insufficient_data",
-    n_obs = 0L
+    n_obs = 0L,
+    on_boundary = FALSE,
+    boundary_type = "none",
+    boundary_warning = NULL,
+    ci_method = "none"
   )
 
   if (!is.null(strata) && !is.null(group_label)) {
@@ -417,22 +486,68 @@
   return(result)
 }
 
-.create_failed_result <- function(exposure, group_label, strata) {
-  result <- tibble::tibble(
-    exposure_var = exposure,
-    rd = NA_real_,
-    ci_lower = NA_real_,
-    ci_upper = NA_real_,
-    p_value = NA_real_,
-    model_type = "failed",
-    n_obs = 0L
-  )
+# Add to your R/utils.R or create new R/unicode_utils.R
 
-  if (!is.null(strata) && !is.null(group_label)) {
-    for (i in seq_along(strata)) {
-      result[[strata[i]]] <- group_label[[i]]
-    }
+#' Safe Unicode Display Functions
+#'
+#' Functions to safely display Unicode characters with fallbacks
+#' for systems that don't support them properly.
+
+# Check if terminal/console supports Unicode
+.supports_unicode <- function() {
+  # Check system capabilities
+  if (Sys.info()["sysname"] == "Windows") {
+    # Windows console historically has poor Unicode support
+    return(capabilities("iconv") && l10n_info()$`UTF-8`)
   }
 
-  return(result)
+  # Check if we're in RStudio (better Unicode support)
+  if (Sys.getenv("RSTUDIO") == "1") {
+    return(TRUE)
+  }
+
+  # Check locale
+  locale <- Sys.getlocale("LC_CTYPE")
+  return(grepl("UTF-8|utf8", locale, ignore.case = TRUE))
+}
+
+# Safe symbol display with fallbacks
+.safe_alpha <- function() {
+  if (.supports_unicode()) {
+    return("\u03b1")  # α
+  } else {
+    return("alpha")
+  }
+}
+
+.safe_plusminus <- function() {
+  if (.supports_unicode()) {
+    return("\u00b1")  # ±
+  } else {
+    return("+/-")
+  }
+}
+
+.safe_check <- function() {
+  if (.supports_unicode()) {
+    return("\u2713")  # ✓
+  } else {
+    return("[PASS]")
+  }
+}
+
+.safe_warning <- function() {
+  if (.supports_unicode()) {
+    return("\u26a0")  # ⚠
+  } else {
+    return("[CAUTION]")
+  }
+}
+
+.safe_cross <- function() {
+  if (.supports_unicode()) {
+    return("\u2717")  # ✗
+  } else {
+    return("[FAIL]")
+  }
 }

@@ -12,7 +12,7 @@
 
 <meta name="author" content="John D. Murphy" />
 
-<meta name="date" content="2025-06-23" />
+<meta name="date" content="2025-06-25" />
 
 <title>Causal Inference with IPTW in riskdiff</title>
 
@@ -340,7 +340,7 @@ code > span.er { color: #a61717; background-color: #e3d2d2; }
 
 <h1 class="title toc-ignore">Causal Inference with IPTW in riskdiff</h1>
 <h4 class="author">John D. Murphy</h4>
-<h4 class="date">2025-06-23</h4>
+<h4 class="date">2025-06-25</h4>
 
 
 <div id="TOC">
@@ -710,7 +710,7 @@ confidence intervals may be more robust:</p>
 <span id="cb9-19"><a href="#cb9-19" tabindex="-1"></a><span class="co">#&gt; Risk in Treated: 23.0% </span></span>
 <span id="cb9-20"><a href="#cb9-20" tabindex="-1"></a><span class="co">#&gt; Risk in Control: 11.8% </span></span>
 <span id="cb9-21"><a href="#cb9-21" tabindex="-1"></a><span class="co">#&gt; Risk Difference: 11.17% </span></span>
-<span id="cb9-22"><a href="#cb9-22" tabindex="-1"></a><span class="co">#&gt; 95%CI: (7.96%, 14.10%)</span></span>
+<span id="cb9-22"><a href="#cb9-22" tabindex="-1"></a><span class="co">#&gt; 95%CI: (8.23%, 14.22%)</span></span>
 <span id="cb9-23"><a href="#cb9-23" tabindex="-1"></a><span class="co">#&gt; P-value: &lt;0.001 </span></span>
 <span id="cb9-24"><a href="#cb9-24" tabindex="-1"></a><span class="co">#&gt; </span></span>
 <span id="cb9-25"><a href="#cb9-25" tabindex="-1"></a><span class="co">#&gt; Note: Confidence intervals based on 500 bootstrap replicates</span></span></code></pre></div>
@@ -824,7 +824,7 @@ comparison_table &lt;- data.frame(
 
 print(comparison_table)
 #&gt;                            Method Risk_Difference CI_Lower CI_Upper P_Value
-#&gt; (Intercept) Regression Adjustment          16.90%    9.72%   24.08%   0.000
+#&gt; (Intercept) Regression Adjustment          16.90%    2.55%   31.26%      NA
 #&gt;                        IPTW (ATE)          17.21%   14.85%   19.56%   0.000</code></pre>
 </div>
 </div>
